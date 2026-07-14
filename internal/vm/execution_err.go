@@ -60,10 +60,20 @@ type (
 	InternalError struct {
 		Opcode byte
 	}
+
+	// MalformedProgramError is returned when the pre-execution verifier rejects a
+	// program (out-of-range operand, truncated instruction, bad jump, ...).
+	MalformedProgramError struct {
+		Reason string
+	}
 )
 
 func (e InternalError) Error() string {
 	return fmt.Sprintf("internal error: unknown opcode %d", e.Opcode)
+}
+
+func (e MalformedProgramError) Error() string {
+	return "malformed program: " + e.Reason
 }
 
 func (e DivideByZeroError) Error() string {
@@ -100,6 +110,7 @@ func (InvalidAccountName) execErr()    {}
 func (NegativeBalanceError) execErr()  {}
 func (DivideByZeroError) execErr()     {}
 func (InternalError) execErr()         {}
+func (MalformedProgramError) execErr() {}
 
 var (
 	_ ExecutionError = (*MissingFundsError)(nil)
@@ -112,4 +123,5 @@ var (
 	_ ExecutionError = (*NegativeBalanceError)(nil)
 	_ ExecutionError = (*DivideByZeroError)(nil)
 	_ ExecutionError = (*InternalError)(nil)
+	_ ExecutionError = (*MalformedProgramError)(nil)
 )

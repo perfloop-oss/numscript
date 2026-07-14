@@ -178,8 +178,8 @@ func TestAssertNonNegativeBalance(t *testing.T) {
 func TestUnknownOpcode(t *testing.T) {
 	prog := Program{Instructions: []Instruction{abc(0xFE, 0, 0, 0)}}
 	_, err := Exec(NewVm(prog), nil, mockStore{})
-	if _, ok := err.(InternalError); !ok {
-		t.Fatalf("expected InternalError, got %v", err)
+	if _, ok := err.(MalformedProgramError); !ok {
+		t.Fatalf("expected MalformedProgramError, got %v", err)
 	}
 }
 
